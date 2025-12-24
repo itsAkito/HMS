@@ -240,9 +240,12 @@ This project uses **Clerk** for authentication. Features include:
 ##  Payment Integration
 
 The system supports:
-- **Stripe** - For payment processing
-- Secure payment handling with proper error management
-- Payment verification and confirmation
+- **Razorpay** - For secure payment processing
+- PCI-compliant payment handling
+- Instant payment verification and settlement
+- Support for multiple payment methods (Cards, Wallets, UPI, etc.)
+- Automated order and customer management
+- Webhook support for real-time payment updates
 
 ---
 
