@@ -50,7 +50,7 @@ A modern, full-stack hotel management application built with **Next.js**, **Type
 ### Services & Tools
 - **Clerk** - Authentication
 - **UploadThing** - File uploads
-- **Stripe** - Payment processing
+- **Razorpay** - Payment processing
 - **Axios** - HTTP client
 - **Next Themes** - Theme management
 
@@ -289,7 +289,8 @@ ext\ - React framework
 - \@clerk/nextjs\ - Authentication
 - \@uploadthing/react\ - File uploads
 - \	ailwindcss\ - CSS framework
-- \eact-hook-form\ - Form management
+- \
+eact-hook-form\ - Form management
 
 ---
 
