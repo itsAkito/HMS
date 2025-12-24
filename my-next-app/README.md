@@ -107,9 +107,9 @@ DATABASE_URL=postgresql://user:password@localhost:5432/hotel_management
 UPLOADTHING_SECRET=your_uploadthing_secret
 NEXT_PUBLIC_UPLOADTHING_APP_ID=your_uploadthing_app_id
 
-# Stripe (if using Stripe for payments)
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
+# Razorpay Payment Gateway
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 
 # API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:3000
