@@ -1,9 +1,10 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
+import Razorpay from 'razorpay';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-11-20',
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID || '',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || '',
 });
 
 export async function POST(request: NextRequest) {
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
       checkIn, 
       checkOut, 
       totalPrice, 
-      currency = 'usd',
+      currency = 'INR',
       userName,
       breakfastIncluded
     } = body;
@@ -48,19 +49,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create payment intent with Stripe
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(totalPrice * 100), // Amount in cents
-      currency: currency.toLowerCase(),
-      metadata: {
+    // Create Razorpay order
+    const razorpayOrder = await razorpay.orders.create({
+      amount: Math.round(totalPrice * 100), // Amount in paise
+      currency: currency.toUpperCase(),
+      receipt: `booking_${roomId}_${Date.now()}`,
+      notes: {
         roomId: roomId.toString(),
         hotelId: hotelId.toString(),
         userId: userId,
         hotelOwnerId: room.hotel.userId,
         checkIn: checkIn.toString(),
         checkOut: checkOut.toString(),
+        roomTitle: room.title,
+        hotelTitle: room.hotel.title,
       },
-      description: `Booking for ${room.title} at ${room.hotel.title}`,
     });
 
     // Create booking record with pending status
@@ -76,7 +79,7 @@ export async function POST(request: NextRequest) {
         breakfastIncluded,
         currency: currency.toUpperCase(),
         totalPrice,
-        paymentIntent: paymentIntent.id,
+        paymentIntent: razorpayOrder.id,
         status: 'pending',
         paymentStatus: false,
       },
@@ -85,14 +88,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         booking,
-        clientSecret: paymentIntent.client_secret,
+        razorpayOrderId: razorpayOrder.id,
+        razorpayKeyId: process.env.RAZORPAY_KEY_ID,
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating payment intent:', error);
+    console.error('Error creating Razorpay order:', error);
     return NextResponse.json(
-      { error: 'Failed to create payment intent' },
+      { error: 'Failed to create payment order' },
       { status: 500 }
     );
   }
